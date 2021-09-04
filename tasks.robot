@@ -7,8 +7,8 @@ Library         RPA.Archive
 Library         OperatingSystem
 Library         RPA.Desktop.Windows
 Library         RPA.PDF
-Library         RPA.Desktop
 Library         MyLibrary
+Library         Collections
 *** Keywords ***
 Open automationanywhere browser
     Open Available Browser    https://developer.automationanywhere.com/challenges/automationanywherelabs-employeedatamigration.html
@@ -30,9 +30,8 @@ Open EmployeeList.exe
     Open Executable    EmployeeList.exe    Employee Database
     
 *** Keywords ***
-Fill in the blanks on the web
-    Wait Until Page Contains Element    id:employeeID     
-    ${id_employee}=    Get Value    id:employeeID
+Get data in the app
+    [Arguments]    ${id_employee}
     Send Keys To Input    ${id_employee}    with_enter=False
     Mouse Click    Search
     ${firstname}=    RPA.Desktop.Windows.Get Element    id:txtFirstName      
@@ -44,15 +43,34 @@ Fill in the blanks on the web
     ${department}=    RPA.Desktop.Windows.Get Element    id:txtDepartment
     ${manager}=    RPA.Desktop.Windows.Get Element    id:txtManager
     ${state}=    RPA.Desktop.Windows.Get Element    id:txtState
-    Input Text    id:firstName    ${firstname}[legacy][Value]
-    Input Text    id:lastName    ${lastname}[legacy][Value]
-    Input Text    id:email    ${email}[legacy][Value]
-    Input Text    id:city    ${city}[legacy][Value]
-    Input Text    id:zip    ${zip}[legacy][Value]
-    Input Text    id:title    ${jobtitle}[legacy][Value]
-    Select From List By Value    id:department    ${department}[legacy][Value]
-    Input Text    id:manager    ${manager}[legacy][Value]
-    Select From List By Value    id:state    ${state}[legacy][Value]
+    Mouse Click    Clear
+    &{company}=    Create Dictionary    
+    ...    firstname = ${firstname}[legacy][Value]
+    ...    lastname = ${lastname}[legacy][Value]
+    ...    email = ${email}[legacy][Value]
+    ...    city = ${city}[legacy][Value]
+    ...    zip = ${zip}[legacy][Value]
+    ...    jobtitle = ${jobtitle}[legacy][Value]
+    ...    department = ${department}[legacy][Value]
+    ...    manager = ${manager}[legacy][Value]
+    ...    state = ${state}[legacy][Value]
+    Dictionary Should Contain Key    dictionary=${company}    key=firstname
+    [Return]    &{company}
+*** Keywords ***
+Fill in the blanks on the web
+    Wait Until Page Contains Element    id:employeeID     
+    ${id_employee}=    Get Value    id:employeeID
+    &{company}=    Get data in the app    ${id_employee}
+    Dictionary Should Contain Key    ${company}    firstname
+    Input Text    id:firstName    &{company}[firstname]   
+    Input Text    id:lastName    ${company}[lastname]
+    Input Text    id:email    ${company}[email]
+    Input Text    id:city    ${company}[city]
+    Input Text    id:zip    ${company}[zip]
+    Input Text    id:title    ${company}[jobtitle]
+    Select From List By Value    id:department   ${company}[department]
+    Input Text    id:manager    ${company}[manager]
+    Select From List By Value    id:state    ${company}[state]
     Execute Javascript    window.open()
     Switch Window    locator=NEW
     Go To    https://botgames-employee-data-migration-vwsrh7tyda-uc.a.run.app/employees?id=${id_employee}
@@ -64,7 +82,7 @@ Fill in the blanks on the web
     Input Text    id:phone    ${phone}
     Input Text    id:startDate    ${Date}
     Click Button    id:submitButton
-    Mouse Click    Clear
+
 *** Keywords ***
 Fill in the blanks on the web for 10 people
     FOR    ${i}    IN RANGE    1    11    1
@@ -77,7 +95,11 @@ Work
     Open automationanywhere browser    
     #Download and decompression
     Open EmployeeList.exe
-    Fill in the blanks on the web for 10 people  
+    Fill in the blanks on the web for 10 people
+
+
+
+      
 
 
 
