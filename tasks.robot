@@ -9,6 +9,7 @@ Library         RPA.Desktop.Windows
 Library         RPA.PDF
 Library         MyLibrary
 Library         Collections
+
 *** Keywords ***
 Open automationanywhere browser
     Open Available Browser    https://developer.automationanywhere.com/challenges/automationanywherelabs-employeedatamigration.html
@@ -22,6 +23,7 @@ Download and decompression
         Click Element    //a[normalize-space()='Download Legacy App']
         Wait until download finish   
     END
+    
     Extract Archive    EmployeeList.zip
 
 *** Keywords ***
@@ -47,6 +49,7 @@ Get data in the app
     ${department}=    RPA.Desktop.Windows.Get Element    id:txtDepartment
     ${manager}=    RPA.Desktop.Windows.Get Element    id:txtManager
     ${state}=    RPA.Desktop.Windows.Get Element    id:txtState
+    
     Mouse Click    Clear
     
     &{company}=    Create Dictionary    
@@ -59,7 +62,6 @@ Get data in the app
     ...    department=${department}[legacy][Value]
     ...    manager=${manager}[legacy][Value]
     ...    state=${state}[legacy][Value]
-    
     
     [Return]    &{company}
 
@@ -82,20 +84,29 @@ Fill in the blanks on the web
     Execute Javascript    window.open()
     Switch Window    locator=NEW
     Go To    https://botgames-employee-data-migration-vwsrh7tyda-uc.a.run.app/employees?id=${id_employee}
+    
     ${phoneandate}=    Get Element Attribute     
     ...    //body//pre    innerHTML
-    ${phone}=    Cut String1    ${phoneandate}
-    ${Date}=    Cut String2    ${phoneandate}
+    ${Date}    ${phone}=    Cut String    ${phoneandate}
+
+    
     Switch Window    locator=MAIN
     Input Text    id:phone    ${phone}
     Input Text    id:startDate    ${Date}
     Click Button    id:submitButton
+
+        
+    
 
 *** Keywords ***
 Fill in the blanks on the web for 10 people
     FOR    ${i}    IN RANGE    1    11    1
         Fill in the blanks on the web
     END
+
+    Click Button    id:btn-modal
+
+    Mouse Click    Close
       
 *** Tasks ***
 Work

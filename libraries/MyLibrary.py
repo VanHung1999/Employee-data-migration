@@ -1,35 +1,26 @@
-def cut_string1(a):
-    b=""
-    for i in range(16,28):
-        b+=a[i]
-    return b
+def cut_string(a):
+    b = ""
+    d = ""
+    e = ""
+    f = ""
+    h = ""
+    for i in range(2,len(a)-1):
+        b += a[i]
+    b = b.replace('"','')
+    b = b.replace(':',' ')
+    b = b.replace(',',' ')
+    c = b.split(" ")
+    for i in range(0,9):
+        if c[i] == 'startDate':
+            d = c[i+1]
+            e = c[i+2]
+            f = c[i+4]
+            g = d + " " + e + "," + " " + f
+        if c[i] == 'phoneNumber':
+            h = c[i+1]
+    return g , h
 
-def cut_string2(a):
-    b=""
-    c=""
-    for i in range(43,46):
-        b+=a[i]
-    if b == "May":
-        for i in range(43,55):
-            c+=a[i]
-    elif b == "Jun" or b == "Jul":
-        for i in range(43,56):
-            c+=a[i]
-    elif b == "Mar" or b == "Apr":
-        for i in range(43,57):
-            c+=a[i]
-    elif b == "Aug":
-        for i in range(43,58):
-            c+=a[i]
-    elif b == "Jan" or b == "Oct":
-        for i in range(43,59):
-            c+=a[i]
-    elif b == "Nov" or b == "Dec":
-        for i in range(43,60):
-            c+=a[i]
-    else:
-        for i in range(43,61):
-            c+=a[i]
-    return c
+
+
 
     
