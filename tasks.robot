@@ -35,7 +35,7 @@ Open EmployeeList.exe
 *** Keywords ***
 Get data in the app
     [Arguments]    ${id_employee}
-    Send Keys To Input    ${id_employee}    with_enter=False
+    Type Into    id:txtEmpId    ${id_employee}    
     Mouse Click    Search
 
     ${firstname}=    RPA.Desktop.Windows.Get Element    id:txtFirstName      
